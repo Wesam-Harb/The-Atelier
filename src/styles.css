@@ -1,0 +1,195 @@
+@import "tailwindcss"; /* 🚀 Correct Tailwind v4 main entry import */
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-surface: var(--surface);
+
+  --shadow-soft: 0 4px 24px -8px
+    color-mix(in oklab, var(--primary) 15%, transparent);
+  --shadow-card: 0 2px 12px -4px oklch(0.5 0.05 265 / 0.08);
+  --shadow-glow: 0 20px 60px -20px
+    color-mix(in oklab, var(--primary) 40%, transparent);
+
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-scale-in: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.985 0.005 265);
+  --foreground: oklch(0.18 0.04 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.04 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.04 265);
+  --primary: oklch(0.55 0.22 280);
+  --primary-foreground: oklch(1 0 0);
+  --primary-soft: oklch(0.95 0.04 280);
+  --secondary: oklch(0.96 0.01 265);
+  --secondary-foreground: oklch(0.2 0.04 265);
+  --muted: oklch(0.96 0.01 265);
+  --muted-foreground: oklch(0.5 0.03 265);
+  --accent: oklch(0.95 0.04 280);
+  --accent-foreground: oklch(0.55 0.22 280);
+  --success: oklch(0.75 0.15 160);
+  --success-foreground: oklch(0.2 0.05 160);
+  --warning: oklch(0.85 0.12 75);
+  --warning-foreground: oklch(0.3 0.08 75);
+  --destructive: oklch(0.65 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.01 265);
+  --input: oklch(0.92 0.01 265);
+  --ring: oklch(0.55 0.22 280);
+  --sidebar-bg: oklch(0.96 0.02 270);
+  --surface: oklch(0.98 0.008 265);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* 🚀 V4 Custom Utility rules directly compiled via native CSS */
+/* 🚀 Fixed for Tailwind v4 Custom Utilities */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* This properly targets .reveal.in-view without breaking the compiler */
+  &.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility gradient-text {
+  background-image: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    oklch(0.65 0.22 310) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  display: inline-block; /* Ensures the clip wraps tightly around the letters */
+}
+
+@utility gradient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    oklch(0.6 0.25 295) 100%
+  );
+}
+
+@utility glow-on-hover {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+  }
+}
