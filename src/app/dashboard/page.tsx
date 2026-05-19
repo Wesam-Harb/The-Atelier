@@ -27,7 +27,7 @@ export default async function HomePage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const totalInProgress = projects.reduce((acc, p) => {
+  const totalInProgress = projects.reduce((acc: number, p: any) => {
     return acc + (p.status === "in-progress" ? 1 : 0);
   }, 0);
 
