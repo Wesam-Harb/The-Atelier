@@ -77,7 +77,7 @@ export default async function allTasks() {
           </section>
           <div className="grid grid-cols-1 gap-10">
             {/* project and its tasks */}
-            {projectsWithTasks.map((project) => (
+            {projectsWithTasks.map((project: any) => (
               <section key={project.id} className="space-y-4 group">
                 <div className="flex items-center justify-between border-b border-[#c5c5d4]/15 pb-4">
                   <div className="flex items-center gap-3">
@@ -94,13 +94,16 @@ export default async function allTasks() {
                   <div className="flex gap-2 items-center">
                     <HoveredAddTaskButton id={project.id} />
                     <span className="bg-[#dfe0ff] text-[#343f8d] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                      {project.tasks.filter((t) => t.status !== "Done").length}{" "}
+                      {
+                        project.tasks.filter((t: any) => t.status !== "Done")
+                          .length
+                      }{" "}
                       Tasks Remaining
                     </span>
                   </div>
                 </div>
                 <div className="bg-[#ffffff] rounded-xl overflow-hidden shadow-sm border border-[#c5c5d4]/10">
-                  {project.tasks.map((task) => (
+                  {project.tasks.map((task: any) => (
                     <div
                       key={task.id}
                       className="group flex items-center justify-between p-4 border-b border-[#eaedff] hover:bg-[#f2f3ff] transition-colors"
