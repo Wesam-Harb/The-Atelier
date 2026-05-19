@@ -284,7 +284,7 @@ function Features() {
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {items.map((it: any) => (
+          {items.map((it: { icon: React.ElementType; title: string; desc: string }) => (
             <div
               key={it.title}
               className="group rounded-2xl bg-card border border-border p-6 hover:border-primary/40 hover:-translate-y-2 hover:shadow-soft transition-all duration-300"
@@ -366,7 +366,7 @@ function TasksMock() {
       {[
         { t: "Do the HomeWork", d: "Due: Wed May 20 2026" },
         { t: "Write My Essay", d: "Due: Wed Feb 22 2204" },
-      ].map((task: any) => (
+      ].map((task: { t: string; d: string }) => (
         <div
           key={task.t}
           className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-primary-soft/40 hover:bg-primary-soft transition-colors"
@@ -482,7 +482,7 @@ function Stats() {
     <section id="stats" className="py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {stats.map((s: any) => (
+          {stats.map((s: { v: string; l: string }) => (
             <div
               key={s.l}
               className="rounded-3xl p-8 bg-card border border-border hover:gradient-bg group-hover:text-white transition-all duration-500 hover:-translate-y-2 group"

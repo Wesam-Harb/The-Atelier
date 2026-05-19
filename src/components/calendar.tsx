@@ -84,30 +84,37 @@ export default function CalendarClient() {
           SUN
         </span>
 
-        {days.map((day) => {
-          const dayTasks = tasks.filter((t) =>
-            dayjs(t.dueDate).isSame(day.fullDate, "day"),
-          );
+        {days.map(
+          (day: {
+            date: string;
+            dayNumber: number;
+            isCurrentMonth: boolean;
+            fullDate: dayjs.Dayjs;
+          }) => {
+            const dayTasks = tasks.filter((t) =>
+              dayjs(t.dueDate).isSame(day.fullDate, "day"),
+            );
 
-          return (
-            <div
-              key={day.date}
-              className={`h-36 border-r border-b border-[#f2f3ff] hover:bg-[#f2f3ff]/50 transition-colors p-2 ${!day.isCurrentMonth ? "bg-slate-50" : "bg-white"}`}
-            >
-              <span className="text-sm font-semibold">{day.dayNumber}</span>
-              <div className="mt-2 space-y-1">
-                {dayTasks.map((task: any) => (
-                  <div
-                    key={task.id}
-                    className={`text-[10px] p-1 rounded border-l-4 ${task.priority === "High" ? "border-r-4 border-r-red-500" : ""} bg-blue-50 ${task.status === "Done" ? "border-emerald-500" : task.status === "In-progress" ? "border-[#2f3b88]" : "border-amber-500"} `}
-                  >
-                    {task.title}
-                  </div>
-                ))}
+            return (
+              <div
+                key={day.date}
+                className={`h-36 border-r border-b border-[#f2f3ff] hover:bg-[#f2f3ff]/50 transition-colors p-2 ${!day.isCurrentMonth ? "bg-slate-50" : "bg-white"}`}
+              >
+                <span className="text-sm font-semibold">{day.dayNumber}</span>
+                <div className="mt-2 space-y-1">
+                  {dayTasks.map((task: CalendarTask) => (
+                    <div
+                      key={task.id}
+                      className={`text-[10px] p-1 rounded border-l-4 ${task.priority === "High" ? "border-r-4 border-r-red-500" : ""} bg-blue-50 ${task.status === "Done" ? "border-emerald-500" : task.status === "In-progress" ? "border-[#2f3b88]" : "border-amber-500"} `}
+                    >
+                      {task.title}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          },
+        )}
       </div>
     </div>
   );

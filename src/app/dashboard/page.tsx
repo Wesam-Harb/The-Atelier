@@ -27,9 +27,12 @@ export default async function HomePage() {
     orderBy: { createdAt: "desc" },
   });
 
-  const totalInProgress = projects.reduce((acc: number, p: any) => {
-    return acc + (p.status === "in-progress" ? 1 : 0);
-  }, 0);
+  const totalInProgress = projects.reduce(
+    (acc: number, p: { status: string }) => {
+      return acc + (p.status === "in-progress" ? 1 : 0);
+    },
+    0,
+  );
 
   const totalCompleted = projects.length - totalInProgress;
 
@@ -86,61 +89,68 @@ export default async function HomePage() {
 
         {/* PROJECTS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {projects.map((project: any) => {
-            const completedCount = project.tasks.filter(
-              (t: any) => t.status === "Done",
-            ).length;
-            const totalCount = project.tasks.length;
-            const progress =
-              totalCount > 0
-                ? Math.round((completedCount / totalCount) * 100)
-                : 0;
+          {projects.map(
+            (project: {
+              id: string;
+              title: string;
+              description: string | null;
+              tasks: { status: string }[];
+            }) => {
+              const completedCount = project.tasks.filter(
+                (t: { status: string }) => t.status === "Done",
+              ).length;
+              const totalCount = project.tasks.length;
+              const progress =
+                totalCount > 0
+                  ? Math.round((completedCount / totalCount) * 100)
+                  : 0;
 
-            return (
-              <div
-                key={project.id}
-                className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-bold">
-                      P
+              return (
+                <div
+                  key={project.id}
+                  className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center font-bold">
+                        P
+                      </div>
+                      <EditProjectMenu id={project.id} />
                     </div>
-                    <EditProjectMenu id={project.id} />
+                    <h3 className="text-lg font-bold text-slate-900 mb-2">
+                      {project.title}
+                    </h3>
+                    <p className="text-slate-500 text-sm line-clamp-2 mb-8">
+                      {project.description ?? "No description provided yet."}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-slate-500 text-sm line-clamp-2 mb-8">
-                    {project.description ?? "No description provided yet."}
-                  </p>
-                </div>
 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-400">
-                      {completedCount}/{totalCount} tasks done
-                    </span>
-                    <span className="text-sm font-black text-indigo-600">
-                      {progress}%
-                    </span>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-slate-400">
+                        {completedCount}/{totalCount} tasks done
+                      </span>
+                      <span className="text-sm font-black text-indigo-600">
+                        {progress}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div
+                        className="bg-indigo-600 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                    <Link
+                      href={`/projectDetail/${project.id}`}
+                      className="block w-full text-center bg-[#dae2fd] text-indigo-600 font-bold py-3 rounded-xl hover:bg-indigo-600 hover:text-white transition-all text-sm"
+                    >
+                      View Details
+                    </Link>
                   </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-indigo-600 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <Link
-                    href={`/projectDetail/${project.id}`}
-                    className="block w-full text-center bg-[#dae2fd] text-indigo-600 font-bold py-3 rounded-xl hover:bg-indigo-600 hover:text-white transition-all text-sm"
-                  >
-                    View Details
-                  </Link>
                 </div>
-              </div>
-            );
-          })}
+              );
+            },
+          )}
 
           {/* START NEW PROJECT CARD */}
           <CreateProjectModal />

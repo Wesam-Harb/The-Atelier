@@ -31,28 +31,34 @@ export default async function allTasks() {
   });
 
   const productivity = Math.round(
-    (projectsWithTasks.reduce((acc: number, project: any) => {
-      const totalTasks = project.tasks.length;
-      const completedTasks = project.tasks.filter(
-        (t: any) => t.status === "Done",
-      ).length;
-      return acc + (totalTasks > 0 ? completedTasks / totalTasks : 0);
-    }, 0) /
+    (projectsWithTasks.reduce(
+      (acc: number, project: { tasks: { status: string }[] }) => {
+        const totalTasks = project.tasks.length;
+        const completedTasks = project.tasks.filter(
+          (t: { status: string }) => t.status === "Done",
+        ).length;
+        return acc + (totalTasks > 0 ? completedTasks / totalTasks : 0);
+      },
+      0,
+    ) /
       projectsWithTasks.length) *
       100,
   );
 
-  const TasksDone = projectsWithTasks.reduce((acc: number, project: any) => {
-    const completedTasks = project.tasks.filter(
-      (t: any) => t.status === "Done",
-    ).length;
-    return acc + completedTasks;
-  }, 0);
+  const TasksDone = projectsWithTasks.reduce(
+    (acc: number, project: { tasks: { status: string }[] }) => {
+      const completedTasks = project.tasks.filter(
+        (t: { status: string }) => t.status === "Done",
+      ).length;
+      return acc + completedTasks;
+    },
+    0,
+  );
 
   const highPriorityTasks = projectsWithTasks.reduce(
-    (acc: number, project: any) => {
+    (acc: number, project: { tasks: { priority: string }[] }) => {
       const highPriority = project.tasks.filter(
-        (t: any) => t.priority === "High",
+        (t: { priority: string }) => t.priority === "High",
       ).length;
       return acc + highPriority;
     },
@@ -77,93 +83,123 @@ export default async function allTasks() {
           </section>
           <div className="grid grid-cols-1 gap-10">
             {/* project and its tasks */}
-            {projectsWithTasks.map((project: any) => (
-              <section key={project.id} className="space-y-4 group">
-                <div className="flex items-center justify-between border-b border-[#c5c5d4]/15 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-8 bg-[#2f3b88] rounded-full"></div>
-                    <div>
-                      <h3 className="text-xl font-bold tracking-tight">
-                        {project.title}
-                      </h3>
-                      <p className="text-xs text-[#505f76] font-label tracking-widest uppercase mt-0.5">
-                        {project.description ?? "No description provided yet."}
-                      </p>
+            {projectsWithTasks.map(
+              (
+                project: {
+                  tasks: {
+                    id: string;
+                    title: string;
+                    status: string;
+                    priority: string;
+                    dueDate: Date | null;
+                    projectId: string;
+                  }[];
+                } & {
+                  id: string;
+                  createdAt: Date;
+                  title: string;
+                  description: string | null;
+                  userId: string;
+                  status: string;
+                },
+              ) => (
+                <section key={project.id} className="space-y-4 group">
+                  <div className="flex items-center justify-between border-b border-[#c5c5d4]/15 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 bg-[#2f3b88] rounded-full"></div>
+                      <div>
+                        <h3 className="text-xl font-bold tracking-tight">
+                          {project.title}
+                        </h3>
+                        <p className="text-xs text-[#505f76] font-label tracking-widest uppercase mt-0.5">
+                          {project.description ??
+                            "No description provided yet."}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <HoveredAddTaskButton id={project.id} />
+                      <span className="bg-[#dfe0ff] text-[#343f8d] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        {
+                          project.tasks.filter(
+                            (t: { status: string }) => t.status !== "Done",
+                          ).length
+                        }{" "}
+                        Tasks Remaining
+                      </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 items-center">
-                    <HoveredAddTaskButton id={project.id} />
-                    <span className="bg-[#dfe0ff] text-[#343f8d] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                      {
-                        project.tasks.filter((t: any) => t.status !== "Done")
-                          .length
-                      }{" "}
-                      Tasks Remaining
-                    </span>
-                  </div>
-                </div>
-                <div className="bg-[#ffffff] rounded-xl overflow-hidden shadow-sm border border-[#c5c5d4]/10">
-                  {project.tasks.map((task: any) => (
-                    <div
-                      key={task.id}
-                      className="group flex items-center justify-between p-4 border-b border-[#eaedff] hover:bg-[#f2f3ff] transition-colors"
-                    >
-                      <div className={`flex items-center gap-4 `}>
-                        <ToggleCheckBox
-                          key={`${task.id}-${task.status}`}
-                          task={{ id: task.id, status: task.status }}
-                          project={{ id: project.id }}
-                        />
+                  <div className="bg-[#ffffff] rounded-xl overflow-hidden shadow-sm border border-[#c5c5d4]/10">
+                    {project.tasks.map(
+                      (task: {
+                        id: string;
+                        title: string;
+                        status: string;
+                        priority: string;
+                        dueDate: Date | null;
+                      }) => (
                         <div
-                          className={`flex flex-col gap-1" ${task.status === "Done" ? "opacity-50 transition-opacity duration-500 line-through" : ""}`}
+                          key={task.id}
+                          className="group flex items-center justify-between p-4 border-b border-[#eaedff] hover:bg-[#f2f3ff] transition-colors"
                         >
-                          <span className="font-semibold text-[#131b2e]">
-                            {task.title}
-                          </span>
-                          <span className="text-xs text-[#505f76]">
-                            Due: {task.dueDate?.toDateString()}
-                          </span>
+                          <div className={`flex items-center gap-4 `}>
+                            <ToggleCheckBox
+                              key={`${task.id}-${task.status}`}
+                              task={{ id: task.id, status: task.status }}
+                              project={{ id: project.id }}
+                            />
+                            <div
+                              className={`flex flex-col gap-1" ${task.status === "Done" ? "opacity-50 transition-opacity duration-500 line-through" : ""}`}
+                            >
+                              <span className="font-semibold text-[#131b2e]">
+                                {task.title}
+                              </span>
+                              <span className="text-xs text-[#505f76]">
+                                Due: {task.dueDate?.toDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-8">
+                            {task.status === "Todo" && (
+                              <span className="bg-rose-500/10 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                                {task.status}
+                              </span>
+                            )}
+                            {task.status === "In-progress" && (
+                              <span className="bg-amber-500/10 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                                {task.status}
+                              </span>
+                            )}
+                            {task.status === "Done" && (
+                              <span className="bg-green-500/10 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                                {task.status}
+                              </span>
+                            )}
+                            <div className="flex items-center gap-2 w-24 max-md:w-fit">
+                              {task.priority === "High" && (
+                                <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                              )}
+                              {task.priority === "Medium" && (
+                                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                              )}
+                              {task.priority === "Low" && (
+                                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                              )}
+                              <span className="text-xs font-medium text-[#505f76]">
+                                {task.priority}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2  transition-opacity">
+                              <EditTaskButton id={task.id} />
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-8">
-                        {task.status === "Todo" && (
-                          <span className="bg-rose-500/10 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
-                            {task.status}
-                          </span>
-                        )}
-                        {task.status === "In-progress" && (
-                          <span className="bg-amber-500/10 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
-                            {task.status}
-                          </span>
-                        )}
-                        {task.status === "Done" && (
-                          <span className="bg-green-500/10 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
-                            {task.status}
-                          </span>
-                        )}
-                        <div className="flex items-center gap-2 w-24 max-md:w-fit">
-                          {task.priority === "High" && (
-                            <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                          )}
-                          {task.priority === "Medium" && (
-                            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                          )}
-                          {task.priority === "Low" && (
-                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                          )}
-                          <span className="text-xs font-medium text-[#505f76]">
-                            {task.priority}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2  transition-opacity">
-                          <EditTaskButton id={task.id} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ))}
+                      ),
+                    )}
+                  </div>
+                </section>
+              ),
+            )}
 
             {/* End of Section */}
 

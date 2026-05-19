@@ -67,35 +67,43 @@ export default async function calendar() {
               </div>
               <div className="space-y-4">
                 {upComing.length > 0 ? (
-                  upComing.map((task: any) => (
-                    <Link
-                      className="block"
-                      href={`/dashboard/projectDetail/${task.projectId}`}
-                      key={task.id}
-                    >
-                      <div className="group cursor-pointer">
-                        <div className="flex items-start gap-4">
-                          <div
-                            className={`w-1.5 h-12 ${task.status === "In-progress" ? "bg-[#2f3b88]" : "bg-amber-500"} rounded-full group-hover:scale-y-110 transition-transform`}
-                          ></div>
-                          <div>
-                            <h4 className="text-sm font-bold text-[#131b2e] mb-1">
-                              {task.title}
-                            </h4>
-
+                  upComing.map(
+                    (task: {
+                      id: string;
+                      title: string;
+                      dueDate: Date | null;
+                      projectId: string;
+                      status: string;
+                    }) => (
+                      <Link
+                        className="block"
+                        href={`/dashboard/projectDetail/${task.projectId}`}
+                        key={task.id}
+                      >
+                        <div className="group cursor-pointer">
+                          <div className="flex items-start gap-4">
                             <div
-                              className={`flex items-center gap-2 text-[10px] font-bold text-[#3d4a69]`}
-                            >
-                              <span className="text-xs">
-                                <CalendarTodayIcon fontSize="small" />
-                              </span>
-                              {task.dueDate?.toDateString()}
+                              className={`w-1.5 h-12 ${task.status === "In-progress" ? "bg-[#2f3b88]" : "bg-amber-500"} rounded-full group-hover:scale-y-110 transition-transform`}
+                            ></div>
+                            <div>
+                              <h4 className="text-sm font-bold text-[#131b2e] mb-1">
+                                {task.title}
+                              </h4>
+
+                              <div
+                                className={`flex items-center gap-2 text-[10px] font-bold text-[#3d4a69]`}
+                              >
+                                <span className="text-xs">
+                                  <CalendarTodayIcon fontSize="small" />
+                                </span>
+                                {task.dueDate?.toDateString()}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </Link>
-                  ))
+                      </Link>
+                    ),
+                  )
                 ) : (
                   <p className="text-sm text-[#505f76]">
                     No upcoming tasks! Great job!

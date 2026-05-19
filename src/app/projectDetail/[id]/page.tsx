@@ -8,6 +8,7 @@ import ToggleCheckBox from "@/components/ToggleCheckBox";
 import FloatedCreateTaskButton from "@/components/FloatedCreateTaskButton";
 import EditTaskButton from "@/components/editTaskButton";
 import Header from "@/components/header";
+import { auth } from "@/auth";
 
 export default async function ProjectDetails({
   params,
@@ -16,6 +17,18 @@ export default async function ProjectDetails({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ status?: string | string[] }>;
 }) {
+  const session = await auth();
+
+  if (!session?.user?.email) {
+    return <div>Not authenticated</div>;
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email: session.user.email,
+    },
+  });
+
   const formatDueText = (dueDate: Date | null) => {
     if (!dueDate) return "No due date";
 
@@ -63,19 +76,28 @@ export default async function ProjectDetails({
     selectedStatus === "all"
       ? project.tasks
       : project.tasks.filter(
-          (task) => normalizeStatus(task.status) === selectedStatus,
+          (task: {
+            id: string;
+            title: string;
+            status: string;
+            priority: string;
+            dueDate: Date | null;
+            projectId: string;
+          }) => normalizeStatus(task.status) === selectedStatus,
         );
 
   const progressPercentage =
     project.tasks.length === 0
       ? 0
-      : (project.tasks.filter((task) => task.status === "Done").length /
+      : (project.tasks.filter(
+          (task: { status: string }) => task.status === "Done",
+        ).length /
           project.tasks.length) *
         100;
 
   return (
     <div className="flex-1 relative">
-      <Header />
+      <Header user={user} />
       <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
         <section className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
@@ -109,7 +131,7 @@ export default async function ProjectDetails({
           <div className="col-span-12 xl:col-span-8 space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4 bg-[#f2f3ff] p-4 rounded-xl">
               <div className="flex gap-1 p-1 bg-[#dae2fd] rounded-lg">
-                {statusFilters.map((status: any) => {
+                {statusFilters.map((status: string) => {
                   const isActive = selectedStatus === status;
                   const label =
                     status === "all"
@@ -154,69 +176,78 @@ export default async function ProjectDetails({
                 <div className="col-span-2 text-right">Action</div>
               </div>
               <div className="divide-y divide-transparent">
-                {filteredTasks.map((task: any) => (
-                  <div
-                    key={task.id}
-                    className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-[#f2f3ff] transition-colors group"
-                  >
-                    <div className="col-span-6 flex items-center gap-4">
-                      <ToggleCheckBox
-                        key={`${task.id}-${task.status}`}
-                        task={{
-                          id: task.id,
-                          status: task.status,
-                        }}
-                        project={{ id: id }}
-                      />
-                      <div
-                        className={`${task.status === "Done" ? "line-through text-slate-400 transition-all duration-500" : ""}`}
-                      >
-                        <h4
-                          className={`font-semibold text-xl text-[#131b2e] ${task.status === "Done" ? "line-through text-slate-400 transition-all duration-500" : ""}`}
+                {filteredTasks.map(
+                  (task: {
+                    id: string;
+                    title: string;
+                    status: string;
+                    priority: string;
+                    dueDate: Date | null;
+                    projectId: string;
+                  }) => (
+                    <div
+                      key={task.id}
+                      className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-[#f2f3ff] transition-colors group"
+                    >
+                      <div className="col-span-6 flex items-center gap-4">
+                        <ToggleCheckBox
+                          key={`${task.id}-${task.status}`}
+                          task={{
+                            id: task.id,
+                            status: task.status,
+                          }}
+                          project={{ id: id }}
+                        />
+                        <div
+                          className={`${task.status === "Done" ? "line-through text-slate-400 transition-all duration-500" : ""}`}
                         >
-                          {task.title}
-                        </h4>
-                        <p className="text-xs text-slate-400">
-                          {formatDueText(task.dueDate)}
-                        </p>
+                          <h4
+                            className={`font-semibold text-xl text-[#131b2e] ${task.status === "Done" ? "line-through text-slate-400 transition-all duration-500" : ""}`}
+                          >
+                            {task.title}
+                          </h4>
+                          <p className="text-xs text-slate-400">
+                            {formatDueText(task.dueDate)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="col-span-2 flex justify-center">
+                        {task.status === "Todo" && (
+                          <span className="bg-rose-500/10 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                            {task.status}
+                          </span>
+                        )}
+                        {task.status === "In-progress" && (
+                          <span className="bg-amber-500/10 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                            {task.status}
+                          </span>
+                        )}
+                        {task.status === "Done" && (
+                          <span className="bg-green-500/10 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+                            {task.status}
+                          </span>
+                        )}
+                      </div>
+                      <div className="col-span-2 flex justify-center items-center gap-2">
+                        {task.priority === "High" && (
+                          <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                        )}
+                        {task.priority === "Medium" && (
+                          <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                        )}
+                        {task.priority === "Low" && (
+                          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                        )}
+                        <span className="text-xs font-medium text-[#505f76]">
+                          {task.priority}
+                        </span>
+                      </div>
+                      <div className="col-span-2 flex justify-end">
+                        <EditTaskButton id={task.id} />
                       </div>
                     </div>
-                    <div className="col-span-2 flex justify-center">
-                      {task.status === "Todo" && (
-                        <span className="bg-rose-500/10 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
-                          {task.status}
-                        </span>
-                      )}
-                      {task.status === "In-progress" && (
-                        <span className="bg-amber-500/10 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
-                          {task.status}
-                        </span>
-                      )}
-                      {task.status === "Done" && (
-                        <span className="bg-green-500/10 text-green-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
-                          {task.status}
-                        </span>
-                      )}
-                    </div>
-                    <div className="col-span-2 flex justify-center items-center gap-2">
-                      {task.priority === "High" && (
-                        <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                      )}
-                      {task.priority === "Medium" && (
-                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                      )}
-                      {task.priority === "Low" && (
-                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                      )}
-                      <span className="text-xs font-medium text-[#505f76]">
-                        {task.priority}
-                      </span>
-                    </div>
-                    <div className="col-span-2 flex justify-end">
-                      <EditTaskButton id={task.id} />
-                    </div>
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
             </div>
           </div>
