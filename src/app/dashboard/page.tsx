@@ -141,7 +141,7 @@ export default async function HomePage() {
                       />
                     </div>
                     <Link
-                      href={`/projectDetail/${project.id}`}
+                      href={`/dashboard/projectDetail/${project.id}`}
                       className="block w-full text-center bg-[#dae2fd] text-indigo-600 font-bold py-3 rounded-xl hover:bg-indigo-600 hover:text-white transition-all text-sm"
                     >
                       View Details
