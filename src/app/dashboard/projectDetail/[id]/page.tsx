@@ -76,13 +76,16 @@ export default async function ProjectDetails({
     selectedStatus === "all"
       ? project.tasks
       : project.tasks.filter(
-          (task) => normalizeStatus(task.status) === selectedStatus,
+          (task: { status: string }) =>
+            normalizeStatus(task.status) === selectedStatus,
         );
 
   const progressPercentage =
     project.tasks.length === 0
       ? 0
-      : (project.tasks.filter((task) => task.status === "Done").length /
+      : (project.tasks.filter(
+          (task: { status: string }) => task.status === "Done",
+        ).length /
           project.tasks.length) *
         100;
 
