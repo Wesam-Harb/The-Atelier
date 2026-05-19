@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@/lib/db";
-import type { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 export async function createProject(formData: FormData) {
@@ -202,7 +201,7 @@ export async function toggleTaskAndSyncProjectStatus(
   newStatus: string,
 ) {
   try {
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.task.update({
         where: { id: taskId },
         data: { status: newStatus },
