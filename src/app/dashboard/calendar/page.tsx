@@ -67,7 +67,7 @@ export default async function calendar() {
               </div>
               <div className="space-y-4">
                 {upComing.length > 0 ? (
-                  upComing.map((task) => (
+                  upComing.map((task: any) => (
                     <Link
                       className="block"
                       href={`/dashboard/projectDetail/${task.projectId}`}

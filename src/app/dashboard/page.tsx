@@ -86,9 +86,9 @@ export default async function HomePage() {
 
         {/* PROJECTS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {projects.map((project) => {
+          {projects.map((project: any) => {
             const completedCount = project.tasks.filter(
-              (t) => t.status === "Done",
+              (t: any) => t.status === "Done",
             ).length;
             const totalCount = project.tasks.length;
             const progress =

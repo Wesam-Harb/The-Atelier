@@ -109,7 +109,7 @@ export default async function ProjectDetails({
           <div className="col-span-12 xl:col-span-8 space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4 bg-[#f2f3ff] p-4 rounded-xl">
               <div className="flex gap-1 p-1 bg-[#dae2fd] rounded-lg">
-                {statusFilters.map((status) => {
+                {statusFilters.map((status: any) => {
                   const isActive = selectedStatus === status;
                   const label =
                     status === "all"
@@ -154,7 +154,7 @@ export default async function ProjectDetails({
                 <div className="col-span-2 text-right">Action</div>
               </div>
               <div className="divide-y divide-transparent">
-                {filteredTasks.map((task) => (
+                {filteredTasks.map((task: any) => (
                   <div
                     key={task.id}
                     className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-[#f2f3ff] transition-colors group"

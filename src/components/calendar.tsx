@@ -96,7 +96,7 @@ export default function CalendarClient() {
             >
               <span className="text-sm font-semibold">{day.dayNumber}</span>
               <div className="mt-2 space-y-1">
-                {dayTasks.map((task) => (
+                {dayTasks.map((task: any) => (
                   <div
                     key={task.id}
                     className={`text-[10px] p-1 rounded border-l-4 ${task.priority === "High" ? "border-r-4 border-r-red-500" : ""} bg-blue-50 ${task.status === "Done" ? "border-emerald-500" : task.status === "In-progress" ? "border-[#2f3b88]" : "border-amber-500"} `}

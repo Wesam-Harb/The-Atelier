@@ -284,7 +284,7 @@ function Features() {
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {items.map((it) => (
+          {items.map((it: any) => (
             <div
               key={it.title}
               className="group rounded-2xl bg-card border border-border p-6 hover:border-primary/40 hover:-translate-y-2 hover:shadow-soft transition-all duration-300"
@@ -366,7 +366,7 @@ function TasksMock() {
       {[
         { t: "Do the HomeWork", d: "Due: Wed May 20 2026" },
         { t: "Write My Essay", d: "Due: Wed Feb 22 2204" },
-      ].map((task) => (
+      ].map((task: any) => (
         <div
           key={task.t}
           className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-primary-soft/40 hover:bg-primary-soft transition-colors"
@@ -436,7 +436,7 @@ function MiniStat({
 }
 
 function CalendarMock() {
-  const days = Array.from({ length: 14 }, (_, i) => 27 + i).map((d) =>
+  const days = Array.from({ length: 14 }, (_, i) => 27 + i).map((d: number) =>
     d > 31 ? d - 31 : d,
   );
   return (
@@ -453,12 +453,12 @@ function CalendarMock() {
         </div>
       </div>
       <div className="grid grid-cols-7 text-[10px] tracking-wider font-bold text-muted-foreground mb-2">
-        {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d) => (
+        {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d: string) => (
           <div key={d}>{d}</div>
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1">
-        {days.map((d, i) => (
+        {days.map((d: number, i: number) => (
           <div
             key={i}
             className="aspect-square rounded-lg border border-border/60 p-2 text-sm font-bold hover:bg-primary-soft hover:border-primary/40 transition-all cursor-pointer"
@@ -482,7 +482,7 @@ function Stats() {
     <section id="stats" className="py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {stats.map((s) => (
+          {stats.map((s: any) => (
             <div
               key={s.l}
               className="rounded-3xl p-8 bg-card border border-border hover:gradient-bg group-hover:text-white transition-all duration-500 hover:-translate-y-2 group"
