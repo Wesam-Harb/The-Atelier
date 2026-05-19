@@ -1,16 +1,20 @@
 "use server";
 
+import { auth } from "@/auth";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
 export async function createProject(formData: FormData) {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
-  const user = await prisma.user.findFirst();
 
-  if (!user) {
-    return { success: false, error: "No user found" };
-  }
+  const session = await auth();
+  if (!session?.user?.email) return { success: false, error: "Unauthorized" };
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+  if (!user) return { success: false, error: "User not found" };
 
   try {
     await prisma.project.create({
