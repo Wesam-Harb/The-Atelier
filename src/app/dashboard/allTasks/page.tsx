@@ -42,19 +42,22 @@ export default async function allTasks() {
       100,
   );
 
-  const TasksDone = projectsWithTasks.reduce((acc, project) => {
+  const TasksDone = projectsWithTasks.reduce((acc: number, project: any) => {
     const completedTasks = project.tasks.filter(
-      (t) => t.status === "Done",
+      (t: any) => t.status === "Done",
     ).length;
     return acc + completedTasks;
   }, 0);
 
-  const highPriorityTasks = projectsWithTasks.reduce((acc, project) => {
-    const highPriority = project.tasks.filter(
-      (t) => t.priority === "High",
-    ).length;
-    return acc + highPriority;
-  }, 0);
+  const highPriorityTasks = projectsWithTasks.reduce(
+    (acc: number, project: any) => {
+      const highPriority = project.tasks.filter(
+        (t: any) => t.priority === "High",
+      ).length;
+      return acc + highPriority;
+    },
+    0,
+  );
   return (
     <div className="flex-1 relative">
       <Header user={user} />
