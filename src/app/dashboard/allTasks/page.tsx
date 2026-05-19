@@ -31,7 +31,7 @@ export default async function allTasks() {
   });
 
   const productivity = Math.round(
-    (projectsWithTasks.reduce((acc: number, project) => {
+    (projectsWithTasks.reduce((acc: number, project: any) => {
       const totalTasks = project.tasks.length;
       const completedTasks = project.tasks.filter(
         (t) => t.status === "Done",
