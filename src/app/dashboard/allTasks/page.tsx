@@ -34,7 +34,7 @@ export default async function allTasks() {
     (projectsWithTasks.reduce((acc: number, project: any) => {
       const totalTasks = project.tasks.length;
       const completedTasks = project.tasks.filter(
-        (t) => t.status === "Done",
+        (t: any) => t.status === "Done",
       ).length;
       return acc + (totalTasks > 0 ? completedTasks / totalTasks : 0);
     }, 0) /
