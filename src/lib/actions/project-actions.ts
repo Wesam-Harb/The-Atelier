@@ -22,7 +22,8 @@ export async function createProject(formData: FormData) {
     });
 
     // This tells Next.js to refresh the data on the page
-    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/allTasks");
     return { success: true };
   } catch (error) {
     console.error("Create project error:", error);
@@ -41,7 +42,8 @@ export async function deleteProject(projectId: string) {
     await prisma.project.delete({
       where: { id: projectId },
     });
-    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/allTasks");
     return { success: true };
   } catch (error) {
     console.error("Delete project error:", error);
@@ -61,7 +63,8 @@ export async function updateProject(projectId: string, formData: FormData) {
         description: description,
       },
     });
-    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/allTasks");
     return { success: true };
   } catch (error) {
     console.error("Update project error:", error);
@@ -102,7 +105,7 @@ export async function createTask(projectId: string, formData: FormData) {
         projectId: projectId,
       },
     });
-    revalidatePath("/projectDetail/[id]");
+    revalidatePath("/dashboard/projectDetail/[id]");
     return { success: true };
   } catch (error) {
     console.error("Create Task error:", error);
@@ -115,7 +118,7 @@ export async function deleteTask(taskId: string) {
     await prisma.task.delete({
       where: { id: taskId },
     });
-    revalidatePath("/projectDetail/[id]");
+    revalidatePath("/dashboard/projectDetail/[id]");
 
     return { success: true };
   } catch (error) {
@@ -156,7 +159,7 @@ export async function updateTask(taskId: string, formData: FormData) {
         dueDate: dueDate,
       },
     });
-    revalidatePath("/projectDetail/[id]");
+    revalidatePath("/dashboard/projectDetail/[id]");
     return { success: true };
   } catch (error) {
     console.error("Update Task error:", error);
@@ -171,7 +174,7 @@ export async function updateTaskStatus(taskId: string, newStatus: string) {
       where: { id: taskId },
       data: { status: newStatus },
     });
-    revalidatePath("/projectDetail/[id]");
+    revalidatePath("/dashboard/projectDetail/[id]");
     return { success: true };
   } catch (error) {
     console.error("Update Task Status error:", error);
@@ -224,9 +227,9 @@ export async function toggleTaskAndSyncProjectStatus(
       });
     });
 
-    revalidatePath(`/projectDetail/${projectId}`);
-    revalidatePath("/");
-    revalidatePath("/allTasks");
+    revalidatePath(`/dashboard/projectDetail/${projectId}`);
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/allTasks");
 
     return { success: true };
   } catch (error) {
